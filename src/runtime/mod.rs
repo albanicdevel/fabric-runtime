@@ -4,7 +4,6 @@ use crate::runtime::{executor::get_executor, task::Task, timer::{TimerEntry, tim
 // ===========
 
 // ===
-pub mod error;
 pub mod task;
 pub mod executor;
 pub mod yieldnow;

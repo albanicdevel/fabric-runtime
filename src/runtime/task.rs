@@ -68,7 +68,7 @@ static VTABLE: RawWakerVTable =
     RawWakerVTable::new(clone_waker, wake_waker, wake_by_ref_waker, drop_waker);
 
 unsafe fn clone_waker(data: *const ()) -> RawWaker {
-    let task = Arc::<Task>::from_raw(data as *const Task);
+    let task = unsafe { Arc::<Task>::from_raw(data as *const Task) };
     let cloned = task.clone();
     // Put the original back (avoid decrementing refcount on drop)
     let _ = Arc::into_raw(task);
@@ -77,7 +77,7 @@ unsafe fn clone_waker(data: *const ()) -> RawWaker {
 
 unsafe fn wake_waker(data: *const ()) {
     // wake consumes the waker => we must drop one Arc ref at end (normal drop).
-    let task = Arc::<Task>::from_raw(data as *const Task);
+    let task = unsafe { Arc::<Task>::from_raw(data as *const Task) };
     task.schedule();
     // `task` dropped here => refcount -1 (correct for wake)
 }
@@ -85,12 +85,12 @@ unsafe fn wake_waker(data: *const ()) {
 unsafe fn wake_by_ref_waker(data: *const ()) {
     // wake_by_ref must NOT consume the waker reference.
     // Reconstruct Arc but avoid dropping it by turning it back into raw.
-    let task = Arc::<Task>::from_raw(data as *const Task);
+    let task = unsafe { Arc::<Task>::from_raw(data as *const Task) };
     task.schedule();
     let _ = Arc::into_raw(task); // keep refcount unchanged
 }
 
 unsafe fn drop_waker(data: *const ()) {
     // dropping the waker consumes one Arc strong ref
-    let _ = Arc::<Task>::from_raw(data as *const Task);
+    let _ = unsafe { Arc::<Task>::from_raw(data as *const Task) };
 }
