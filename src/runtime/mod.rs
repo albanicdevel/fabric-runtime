@@ -8,6 +8,7 @@ pub mod task;
 pub mod executor;
 pub mod yieldnow;
 pub mod timer;
+pub mod join;
 // ===
 
 type BoxFuture = Pin<Box<dyn Future<Output = ()> + Send + 'static>>;
