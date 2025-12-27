@@ -7,7 +7,19 @@ pub struct Executor {
     pub(crate) cv: Condvar,
 }
 
+// Are you asking why I used static?
+// There is exactly ONE executor in the program, which lives the entire time the process is running.
+// spawn() can be called from anywhere
+
+// spawn() does not accept &Executor
+
+// worker threads run in the background
+
+// timers also run in the background
+
+//Waker can fire at any time
 static EXEC: OnceLock<Executor> = OnceLock::new();
+
 
 pub fn get_executor() -> &'static Executor {
     EXEC.get_or_init(|| {
