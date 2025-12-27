@@ -1,0 +1,7 @@
+[package]
+name = "fabric-runtime"
+version = "0.1.0"
+edition = "2024"
+description = "Base async runtime"
+license = "MIT"
+[dependencies]
